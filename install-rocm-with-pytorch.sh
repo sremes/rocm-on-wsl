@@ -24,7 +24,7 @@ sudo apt update
 
 # Install minimal set of ROCm packages
 echo "Installing ROCm packages..."
-sudo apt install -y \ 
+sudo apt install -y \
     hsa-runtime-rocr4wsl-amdgpu \
     rocminfo
 
