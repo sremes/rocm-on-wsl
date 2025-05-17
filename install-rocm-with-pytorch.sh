@@ -14,7 +14,7 @@ wget https://repo.radeon.com/rocm/rocm.gpg.key -O - | \
 # Add the ROCm repository
 echo "Adding ROCm repository..."
 echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/rocm.gpg] https://repo.radeon.com/rocm/apt/6.4 noble main" \
-    | sudo tee --append /etc/apt/sources.list.d/rocm.list
+    | sudo tee /etc/apt/sources.list.d/rocm.list
 echo -e 'Package: *\nPin: release o=repo.radeon.com\nPin-Priority: 600' \
     | sudo tee /etc/apt/preferences.d/rocm-pin-600
 
@@ -37,6 +37,7 @@ echo "Installing python venv..."
 sudo apt install -y python3.12-venv python-is-python3
 python -m venv ~/venv-rocm-pytorch
 source ~/venv-rocm-pytorch/bin/activate
+pip install numpy
 
 # Install PyTorch with ROCm support
 echo "Installing PyTorch with ROCm support..."
@@ -51,7 +52,8 @@ ln -s /opt/rocm/lib/libhsa-runtime64.so ~/venv-rocm-pytorch/lib/python3.12/site-
 
 # Test the installation
 echo "Testing the installation..."
-python -c "import torch; print(torch.__version__); print(torch.cuda.is_available()); print(torch.cuda.device_count()); print(torch.cuda.get_device_name(0))"
+echo "NOTE: Ignore the following error: LoadLib(libhsa-amd-aqlprofile64.so) failed: libhsa-amd-aqlprofile64.so: cannot open shared object file: No such file or directory"
+python -c "import torch; print('torch version: ', torch.__version__); print('cuda/hip is available:', torch.cuda.is_available()); print('num devices: ', torch.cuda.device_count()); print('device 0 name: ', torch.cuda.get_device_name(0))"
 
 echo "Installation complete. You can now use PyTorch with ROCm support."
 echo "To activate the virtual environment, run: source ~/venv-rocm-pytorch/bin/activate"
